@@ -37,3 +37,12 @@ Files in this repository are symlinked directly into the user root (`/home/dev`)
 - **Guidelines for New Utilities**:
   - Prefer reading from `/sys/` and `/proc/` directly over heavy userspace tools when possible.
   - Keep utilities modular and documented in `.zsh_aliases` or dedicated helper scripts under this repository.
+
+---
+
+## 5. File Size & Refactoring Rules
+- **Hard Limit**: All files must remain strictly **under 500 lines**.
+- **Refactoring Threshold (371–401 lines)**:
+  - When any file approaches between **371 and 401 lines**, stop and formulate a plan to refactor and modularize.
+  - Split large configs or scripts into focused modules (e.g., dedicated topic files sourced by the main entrypoint).
+
