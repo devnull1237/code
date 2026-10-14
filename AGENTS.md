@@ -46,3 +46,17 @@ Files in this repository are symlinked directly into the user root (`/home/dev`)
   - When any file approaches between **371 and 401 lines**, stop and formulate a plan to refactor and modularize.
   - Split large configs or scripts into focused modules (e.g., dedicated topic files sourced by the main entrypoint).
 
+---
+
+## 6. Machine Bootstrap & Organization
+The ultimate purpose of this repository is **zero-to-running machine spin-up**. On any fresh laptop, cloning `~/code` should install dependencies, configure symlinks, restore settings, and bring up the complete development environment.
+
+### Target Repository Layout:
+- `bootstrap.sh` (or `install.sh`): Idempotent, modular onboarding script to provision apt packages, setup tools, create symlinks, and configure defaults.
+- `bin/` or `tools/`: Standalone helper CLI scripts and lightweight utilities added to `$PATH`.
+- `dotfiles/`: Dotfiles organized cleanly (symlinked into `$HOME`).
+- `config/`: App-specific configuration files (e.g., Neovim, terminal configs, XFCE/desktop tweaks).
+
+> **Guideline for Agents**: Keep provisioning scripts idempotent (`-y` flags, check if already installed or symlinked, don't clobber user data without backups). Everything created here should be reproducible across new machines.
+
+
