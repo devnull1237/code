@@ -65,6 +65,9 @@ upgrade_system() {
     log_info "Running full system update & package upgrade..."
     export DEBIAN_FRONTEND=noninteractive
     
+    # Remove any dead/stale 7.0 mongodb lists that block apt updates on noble
+    run_sudo rm -f /etc/apt/sources.list.d/mongodb-org-7.0.list 2>/dev/null || true
+
     if command -v nala >/dev/null 2>&1; then
         run_sudo nala update
         run_sudo nala upgrade -y
