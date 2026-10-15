@@ -26,6 +26,7 @@ alias gd='git diff'
 if [ -f "$HOME/.local/bin/devgo" ]; then
     alias devgo="$HOME/.local/bin/devgo"
 fi
+alias freshenup="$HOME/code/freshenup.sh"
 
 # Battery statistics
 batt() {
