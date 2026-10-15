@@ -53,24 +53,26 @@ install_mongodb() {
     if command -v mongod >/dev/null 2>&1 || dpkg -s mongodb-org >/dev/null 2>&1; then
         log_ok "MongoDB is already installed."
     else
-        log_info "Configuring MongoDB Community repository..."
-        local keyring="/etc/apt/keyrings/mongodb-server-7.0.gpg"
-        local list_file="/etc/apt/sources.list.d/mongodb-org-7.0.list"
-
-        run_sudo mkdir -p /etc/apt/keyrings
-        if [ ! -f "$keyring" ]; then
-            curl -fsSL https://www.mongodb.org/static/pgp/server-7.0.asc | gpg --dearmor | run_sudo tee "$keyring" >/dev/null
-        fi
-
-        # Detect Ubuntu codename underlying Linux Mint (e.g., jammy, noble)
+        # Detect Ubuntu codename underlying Linux Mint (e.g., noble for Mint 22, jammy for Mint 21)
         local ubuntu_codename
         ubuntu_codename="$(grep UBUNTU_CODENAME /etc/os-release 2>/dev/null | cut -d= -f2 || true)"
         if [ -z "$ubuntu_codename" ]; then
-            ubuntu_codename="$(lsb_release -cs 2>/dev/null || echo "jammy")"
+            ubuntu_codename="$(lsb_release -cs 2>/dev/null || echo "noble")"
+        fi
+
+        # MongoDB 8.0 officially supports noble (Ubuntu 24.04 / Mint 22) and jammy (Ubuntu 22.04 / Mint 21)
+        local mongo_ver="8.0"
+        local keyring="/etc/apt/keyrings/mongodb-server-${mongo_ver}.gpg"
+        local list_file="/etc/apt/sources.list.d/mongodb-org-${mongo_ver}.list"
+
+        run_sudo rm -f /etc/apt/sources.list.d/mongodb-org-7.0.list || true
+        run_sudo mkdir -p /etc/apt/keyrings
+        if [ ! -f "$keyring" ]; then
+            curl -fsSL https://www.mongodb.org/static/pgp/server-${mongo_ver}.asc | gpg --dearmor | run_sudo tee "$keyring" >/dev/null
         fi
 
         if [ ! -f "$list_file" ]; then
-            echo "deb [arch=amd64,arm64 signed-by=$keyring] https://repo.mongodb.org/apt/ubuntu ${ubuntu_codename}/mongodb-org/7.0 multiverse" | run_sudo tee "$list_file" >/dev/null
+            echo "deb [arch=amd64,arm64 signed-by=$keyring] https://repo.mongodb.org/apt/ubuntu ${ubuntu_codename}/mongodb-org/${mongo_ver} multiverse" | run_sudo tee "$list_file" >/dev/null
         fi
 
         run_sudo apt-get update -qq
