@@ -5,7 +5,7 @@ Welcome to `~/code`. This repository houses shell configuration, dotfiles, low-l
 ---
 
 ## 1. Directory Context: `~/code` vs `~/Code`
-- **`~/code` (lowercase)**: Low-level system scripts, shell dotfiles (`.zshrc`, `.zsh_aliases`), hardware/sysfs queries (`/sys`, `/proc`), and lightweight CLI utilities.
+- **`~/code` (lowercase)**: Low-level system scripts, shell dotfiles (`.bashrc`, `.bash_aliases`, `.inputrc`), hardware/sysfs queries (`/sys`, `/proc`), and lightweight CLI utilities.
 - **`~/Code` (uppercase)**: Higher-level development projects, applications, and full codebases.
 - Maintain this distinction: keep `~/code` lean, fast, and close to the kernel.
 
@@ -13,8 +13,9 @@ Welcome to `~/code`. This repository houses shell configuration, dotfiles, low-l
 
 ## 2. Symlink Architecture
 Files in this repository are symlinked directly into the user root (`/home/dev`):
-- `~/code/.zshrc` &rarr; `~/.zshrc`
-- `~/code/.zsh_aliases` &rarr; `~/.zsh_aliases`
+- `~/code/.bashrc` &rarr; `~/.bashrc`
+- `~/code/.bash_aliases` &rarr; `~/.bash_aliases`
+- `~/code/.inputrc` &rarr; `~/.inputrc`
 
 > **Rule for Agents**: When editing shell dotfiles, always modify the source files in `/home/dev/code/` (or verify that the symlink in `~` remains intact). Do not overwrite symlinks in `~` with regular files.
 
@@ -29,14 +30,14 @@ Files in this repository are symlinked directly into the user root (`/home/dev`)
 ---
 
 ## 4. Shell & Tools
-- **Default Shell**: Zsh (with `zsh-autosuggestions` and `zsh-syntax-highlighting` loaded from `/usr/share/`).
+- **Default Shell**: Bash (with `bash-completion` and optimized Readline settings via `.inputrc`).
 - **Aliases & Helpers**:
-  - Defined in `.zsh_aliases` and sourced by `.zshrc`.
+  - Defined in `.bash_aliases` and sourced by `.bashrc`.
   - `batt`: Quick battery status inspecting `/sys/class/power_supply/BAT0/` (fallback to `upower`).
   - `devgo`: Custom environment unlocker and launcher for `agy`.
 - **Guidelines for New Utilities**:
   - Prefer reading from `/sys/` and `/proc/` directly over heavy userspace tools when possible.
-  - Keep utilities modular and documented in `.zsh_aliases` or dedicated helper scripts under this repository.
+  - Keep utilities modular and documented in `.bash_aliases` or dedicated helper scripts under this repository.
 
 ---
 

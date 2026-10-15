@@ -16,9 +16,12 @@ link_file() {
     local dst="$2"
 
     if [ -L "$dst" ]; then
-        local current_target
+        local current_raw current_target src_target
+        current_raw="$(readlink "$dst" || true)"
         current_target="$(readlink -f "$dst" || true)"
-        if [ "$current_target" = "$src" ]; then
+        src_target="$(readlink -f "$src" || true)"
+
+        if [ "$current_raw" = "$src" ] || { [ -n "$current_target" ] && [ "$current_target" = "$src_target" ]; }; then
             ok "Symlink already in place: $dst -> $src"
             return 0
         fi
@@ -39,9 +42,8 @@ link_file() {
 install_packages() {
     info "Checking required system packages..."
     local pkgs=(
-        zsh
-        zsh-autosuggestions
-        zsh-syntax-highlighting
+        bash
+        bash-completion
         git
         curl
         wget
@@ -84,7 +86,7 @@ setup_directories() {
     info "Setting up standard directories..."
     mkdir -p "$HOME/.local/bin"
     mkdir -p "$HOME/.config"
-    mkdir -p "$HOME/code"
+    [ -e "$HOME/code" ] || mkdir -p "$HOME/code"
     mkdir -p "$HOME/Code"
     ok "Directories ready."
 }
@@ -92,29 +94,50 @@ setup_directories() {
 # 3. Dotfile Symlinks
 setup_symlinks() {
     info "Configuring symlinks..."
-    link_file "$DOTFILES_DIR/.zshrc" "$HOME/.zshrc"
-    link_file "$DOTFILES_DIR/.zsh_aliases" "$HOME/.zsh_aliases"
+    local base_src="$DOTFILES_DIR"
+    if [ -d "$HOME/code" ] && [ "$(readlink -f "$HOME/code")" = "$(readlink -f "$DOTFILES_DIR")" ]; then
+        base_src="$HOME/code"
+    fi
+    link_file "$base_src/.bashrc" "$HOME/.bashrc"
+    link_file "$base_src/.bash_aliases" "$HOME/.bash_aliases"
+    link_file "$base_src/.inputrc" "$HOME/.inputrc"
 }
 
 # 4. Default Shell Check
 setup_shell() {
-    local zsh_path
-    zsh_path="$(command -v zsh || true)"
-    if [ -n "$zsh_path" ] && [ "$SHELL" != "$zsh_path" ]; then
+    local bash_path
+    bash_path="$(command -v bash || true)"
+    local current_shell_real="$(readlink -f "$SHELL" 2>/dev/null || true)"
+    local bash_real="$(readlink -f "$bash_path" 2>/dev/null || true)"
+
+    if [ -n "$bash_real" ] && [ "$current_shell_real" != "$bash_real" ]; then
         info "Default shell is currently $SHELL."
-        info "To set zsh as your default shell, run: chsh -s $zsh_path"
+        info "To set Bash as your default shell, run: chsh -s $bash_path"
     else
-        ok "Zsh is already your active shell."
+        ok "Bash is already your active shell."
     fi
 }
 
 main() {
+    local dotfiles_only=false
+    for arg in "$@"; do
+        case "$arg" in
+            --dotfiles-only|-d) dotfiles_only=true ;;
+        esac
+    done
+
     info "Starting machine bootstrap from $DOTFILES_DIR"
     setup_directories
-    install_packages
+    if [ "$dotfiles_only" = true ]; then
+        info "Skipping package installation (--dotfiles-only specified)."
+    else
+        install_packages
+    fi
     setup_symlinks
     setup_shell
     ok "Bootstrap complete! You're ready to rock."
 }
 
-main "$@"
+if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
+    main "$@"
+fi
