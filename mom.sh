@@ -33,10 +33,13 @@ start_time="$(date +%s)"
 # 4. Silence databases and unnecessary daemons
 "$MOM_DIR/daemons.sh"
 
-# 5. Flush clipboards, buffers, and drop caches
+# 5. Terminate distraction apps, game launchers, and disconnect VPN
+"$MOM_DIR/apps.sh"
+
+# 6. Flush clipboards, buffers, and drop caches
 "$MOM_DIR/sanitize.sh"
 
-# 6. Deploy action cockpit (tmux with agy + shell, remote-control for phone, Firefox)
+# 7. Deploy action cockpit (multi-pane tmux: agy + editor + bash, phone remote-control, Firefox)
 "$MOM_DIR/cockpit.sh"
 
 end_time="$(date +%s)"
