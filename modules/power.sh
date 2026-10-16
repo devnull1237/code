@@ -111,11 +111,39 @@ setup_cinnamon_power() {
     log_ok "Cinnamon power preferences configured."
 }
 
+# 4. Permanently Disable Bluetooth at Boot/Bootstrap
+disable_bluetooth() {
+    log_info "Permanently disabling Bluetooth service and kernel radio at boot..."
+    # Stop and mask the systemd service so it cannot be socket-activated or started at boot
+    run_sudo systemctl stop bluetooth 2>/dev/null || true
+    run_sudo systemctl mask bluetooth 2>/dev/null || true
+
+    # Blacklist bluetooth drivers from auto-loading at boot
+    local bl_conf="/etc/modprobe.d/blacklist-bluetooth.conf"
+    local bl_rules="blacklist btusb
+blacklist bluetooth
+blacklist btrtl
+blacklist btintel
+blacklist btbcm
+"
+    if [ ! -f "$bl_conf" ] || [ "$(cat "$bl_conf" 2>/dev/null)" != "$bl_rules" ]; then
+        echo "$bl_rules" | run_sudo tee "$bl_conf" >/dev/null
+        log_ok "Blacklisted Bluetooth kernel modules in $bl_conf."
+    fi
+
+    # Hardware RFKill block on bluetooth
+    if command -v rfkill >/dev/null 2>&1; then
+        run_sudo rfkill block bluetooth 2>/dev/null || true
+    fi
+    log_ok "Bluetooth permanently disabled at boot."
+}
+
 main() {
     log_info "--- Running Module: power ---"
     setup_lid_switch
     setup_tlp
     setup_cinnamon_power
+    disable_bluetooth
     log_ok "Power configuration module complete."
 }
 

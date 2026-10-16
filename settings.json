@@ -15,6 +15,9 @@
       "mullvad-vpn"
     ]
   },
+  "hardware": {
+    "bluetooth_on_boot": false
+  },
   "services": {
     "mongodb": true,
     "redis": true,
