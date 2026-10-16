@@ -29,18 +29,12 @@ if ! shopt -oq posix; then
     fi
 fi
 
-# Git prompt settings
-export GIT_PS1_SHOWDIRTYSTATE=1
-export GIT_PS1_SHOWUNTRACKEDFILES=1
-export GIT_PS1_SHOWUPSTREAM="auto"
-
-# Prompt construction
+# Prompt construction (clean, fast, no git noise)
 build_prompt() {
     local EXIT_CODE=$?
     local RESET='\[\033[00m\]'
     local BOLD_BLUE='\[\033[01;34m\]'
     local BOLD_GREEN='\[\033[01;32m\]'
-    local YELLOW='\[\033[00;33m\]'
     local RED='\[\033[00;31m\]'
 
     local STATUS_COLOR="$BOLD_GREEN"
@@ -53,12 +47,7 @@ build_prompt() {
         VENV_PROMPT="(${VIRTUAL_ENV##*/}) "
     fi
 
-    local GIT_PROMPT=""
-    if declare -F __git_ps1 >/dev/null 2>&1; then
-        GIT_PROMPT="$(__git_ps1 ' %s')"
-    fi
-
-    PS1="${VENV_PROMPT}${BOLD_GREEN}\u@\h${RESET}:${BOLD_BLUE}\w${RESET}${YELLOW}${GIT_PROMPT}${RESET}\n${STATUS_COLOR}\$${RESET} "
+    PS1="${VENV_PROMPT}${BOLD_GREEN}\u@\h${RESET}:${BOLD_BLUE}\w${RESET} ${STATUS_COLOR}\$${RESET} "
 }
 PROMPT_COMMAND="build_prompt"
 
@@ -74,3 +63,4 @@ fi
 
 # User bin in PATH
 export PATH="$HOME/.local/bin:$PATH"
+export PATH="$HOME/.npm-global/bin:$PATH"
