@@ -26,7 +26,8 @@ alias gd='git diff'
 if [ -f "$HOME/.local/bin/devgo" ]; then
     alias devgo="$HOME/.local/bin/devgo"
 fi
-alias freshenup="$HOME/code/freshenup.sh"
+alias bootstrap="$HOME/code/bootstrap.sh"
+alias freshenup="$HOME/code/bootstrap.sh"
 alias mom="$HOME/code/mom.sh"
 alias proj="$HOME/code/bin/proj"
 alias hydrate="$HOME/code/hydrate.sh"
