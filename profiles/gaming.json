@@ -1,0 +1,54 @@
+{
+  "profile": "gaming",
+  "description": "High-performance gaming state: uncapped GPU/CPU, full audio, and game launcher spin-up",
+  "compute": {
+    "cpu_governor": "performance",
+    "turbo_boost": true,
+    "gpu_mode": "max-performance"
+  },
+  "display": {
+    "sleep_timeout_ac": 0,
+    "dim_inactive": false
+  },
+  "audio": {
+    "microphone": "active",
+    "capture_volume": 80
+  },
+  "radios": {
+    "rfkill": "unblock",
+    "wifi": "active",
+    "bluetooth": "active"
+  },
+  "launchers": [
+    {
+      "name": "Steam",
+      "command": "steam",
+      "binary": "steam"
+    },
+    {
+      "name": "Heroic Games Launcher (Epic / GOG)",
+      "command": "heroic",
+      "binary": "heroic"
+    },
+    {
+      "name": "Lutris",
+      "command": "lutris",
+      "binary": "lutris"
+    },
+    {
+      "name": "Battle.net / Bottles",
+      "command": "bottles",
+      "binary": "bottles"
+    },
+    {
+      "name": "Discord",
+      "command": "discord",
+      "binary": "discord"
+    }
+  ],
+  "services_to_suspend": [
+    "mongod",
+    "redis-server",
+    "ollama"
+  ]
+}
