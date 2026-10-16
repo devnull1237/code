@@ -13,6 +13,22 @@
       "jq",
       "xclip",
       "mullvad-vpn"
+    ],
+    "debloat": [
+      "libreoffice-core",
+      "libreoffice-common",
+      "thunderbird",
+      "hexchat",
+      "rhythmbox",
+      "celluloid",
+      "hypnotix",
+      "drawing",
+      "simple-scan",
+      "warpinator",
+      "thingy",
+      "sticky",
+      "gnome-mines",
+      "gnome-sudoku"
     ]
   },
   "hardware": {

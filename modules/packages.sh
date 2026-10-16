@@ -133,8 +133,36 @@ install_mullvad() {
     log_ok "Mullvad VPN installed successfully."
 }
 
+# 6. System Debloat Phase (Purge stock office, media players, and bloatware)
+debloat_system() {
+    local settings_file="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/settings.json"
+    local targets=()
+
+    if [ -f "$settings_file" ] && command -v jq >/dev/null 2>&1; then
+        while IFS= read -r pkg; do
+            [ -n "$pkg" ] && targets+=("$pkg")
+        done < <(jq -r '.packages.debloat[]? // empty' "$settings_file" 2>/dev/null || true)
+    fi
+
+    local to_purge=()
+    for pkg in "${targets[@]}"; do
+        if dpkg -s "$pkg" >/dev/null 2>&1; then
+            to_purge+=("$pkg")
+        fi
+    done
+
+    if [ ${#to_purge[@]} -gt 0 ]; then
+        log_info "Debloating system! Purging: ${to_purge[*]}"
+        run_sudo apt-get purge --auto-remove -y "${to_purge[@]}"
+        log_ok "Bloatware purged successfully."
+    else
+        log_ok "No bloatware found on the system."
+    fi
+}
+
 main() {
     log_info "--- Running Module: packages ---"
+    debloat_system
     install_core_packages
     install_firefox
     install_google_chrome
