@@ -1,23 +1,39 @@
 {
   "profile": "gaming",
-  "description": "High-performance gaming state: uncapped GPU/CPU, full audio, and game launcher spin-up",
+  "description": "Headless-lean, high-performance gaming state: uncapped compute, controller support, GE-Proton, and sub-5ms low-latency audio",
   "compute": {
     "cpu_governor": "performance",
     "turbo_boost": true,
     "gpu_mode": "max-performance"
   },
-  "display": {
-    "sleep_timeout_ac": 0,
-    "dim_inactive": false
+  "kernel_tuning": {
+    "vm.max_map_count": 2147483642,
+    "kernel.split_lock_mitigate": 0
   },
   "audio": {
     "microphone": "active",
-    "capture_volume": 80
+    "capture_volume": 80,
+    "pipewire_quantum": "128/48000",
+    "latency_mode": "ultra-low"
+  },
+  "display": {
+    "sleep_timeout_ac": 0,
+    "dim_inactive": false
   },
   "radios": {
     "rfkill": "unblock",
     "wifi": "active",
     "bluetooth": "active"
+  },
+  "controller_support": {
+    "game_devices_udev": true,
+    "playstation": true,
+    "xbox": true,
+    "switch_pro": true
+  },
+  "compatibility": {
+    "ge_proton_auto_update": true,
+    "tool": "protonup"
   },
   "launchers": [
     {
