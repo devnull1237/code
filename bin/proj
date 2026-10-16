@@ -1,0 +1,47 @@
+#!/usr/bin/env bash
+# bin/proj - Dedicated per-project tmux workspace spawner
+# Layout: Left pane agy (interactive agent), Right pane clean bash shell
+set -euo pipefail
+
+# 1. Determine target directory and session name
+TARGET_PATH="${1:-.}"
+if [ ! -d "$TARGET_PATH" ]; then
+    echo -e "\033[1;31m[ERROR]\033[0m Directory '$TARGET_PATH' does not exist."
+    exit 1
+fi
+
+PROJECT_DIR="$(cd "$TARGET_PATH" && pwd)"
+PROJECT_NAME="$(basename "$PROJECT_DIR" | tr '.: ' '---')"
+SESSION_NAME="proj-$PROJECT_NAME"
+
+# 2. If session already exists, attach or switch directly
+if tmux has-session -t "$SESSION_NAME" 2>/dev/null; then
+    echo -e "\033[1;34m[INFO]\033[0m Attaching to existing workspace session: $SESSION_NAME"
+    if [ -n "${TMUX:-}" ]; then
+        tmux switch-client -t "$SESSION_NAME"
+    else
+        tmux attach-session -t "$SESSION_NAME"
+    fi
+    exit 0
+fi
+
+echo -e "\033[1;32m[INFO]\033[0m Spawning project workspace for '$PROJECT_NAME' at $PROJECT_DIR"
+
+# 3. Create new session in project directory starting with agy on the left
+tmux new-session -d -s "$SESSION_NAME" -c "$PROJECT_DIR" -n "workspace" "agy"
+
+# 4. Split horizontally: bash prompt on the right
+tmux split-window -h -t "$SESSION_NAME:1" -c "$PROJECT_DIR" "bash"
+
+# 5. Set proportional layout (left agy 58%, right bash 42%)
+tmux resize-pane -t "$SESSION_NAME:1.1" -x "58%" 2>/dev/null || true
+
+# 6. Focus the interactive agy pane
+tmux select-pane -t "$SESSION_NAME:1.1"
+
+# 7. Attach or switch to the new session
+if [ -n "${TMUX:-}" ]; then
+    tmux switch-client -t "$SESSION_NAME"
+else
+    tmux attach-session -t "$SESSION_NAME"
+fi

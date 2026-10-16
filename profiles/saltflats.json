@@ -1,0 +1,18 @@
+{
+  "profile": "saltflats",
+  "description": "Full throttle: Performance CPU governor, turbo boost unthrottled, maximum GPU performance",
+  "compute": {
+    "cpu_governor": "performance",
+    "turbo_boost": true,
+    "gpu_mode": "max-performance"
+  },
+  "radios": {
+    "rfkill": "unblock",
+    "wifi": "active",
+    "bluetooth": "active"
+  },
+  "sensors": {
+    "microphone": "active",
+    "camera": "active"
+  }
+}

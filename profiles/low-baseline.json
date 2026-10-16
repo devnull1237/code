@@ -1,0 +1,16 @@
+{
+  "profile": "low-baseline",
+  "description": "Conservative post-triage recovery: unblocks Wi-Fi, restores audio, powersave governor",
+  "radios": {
+    "rfkill": "unblock",
+    "wifi": "up"
+  },
+  "sensors": {
+    "microphone": "active",
+    "camera": "active"
+  },
+  "compute": {
+    "cpu_governor": "powersave",
+    "turbo_boost": false
+  }
+}

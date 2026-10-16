@@ -35,8 +35,10 @@ Files in this repository are symlinked directly into the user root (`/home/dev`)
 - **Terminal Multiplexer**: `tmux` with unified X11 system clipboard integration (`xclip`), mouse support, and Vi keybindings.
 - **Aliases & Helpers**:
   - Defined in `.bash_aliases` and sourced by `.bashrc`.
+  - `hydrate`: Universal composable serial profile engine (`~/code/hydrate.sh <profile1> [profile2]`).
   - `freshenup`: Top-off and synchronize system packages, dotfiles, services, and AI models (`~/code/freshenup.sh`).
   - `mom`: Metal Over Moss emergency hardening ripcord and triage cockpit (`~/code/mom.sh` & `~/code/mom/`).
+  - `proj`: Per-project tmux workspace spawner (`agy` + shell) (`~/code/bin/proj [dir]`).
   - `batt`: Quick battery status inspecting `/sys/class/power_supply/BAT0/` (fallback to `upower`).
   - `devgo`: Custom environment unlocker and launcher for `agy`.
 - **Guidelines for New Utilities**:

@@ -28,6 +28,8 @@ if [ -f "$HOME/.local/bin/devgo" ]; then
 fi
 alias freshenup="$HOME/code/freshenup.sh"
 alias mom="$HOME/code/mom.sh"
+alias proj="$HOME/code/bin/proj"
+alias hydrate="$HOME/code/hydrate.sh"
 
 # Battery statistics
 batt() {

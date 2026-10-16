@@ -1,0 +1,22 @@
+{
+  "profile": "mom",
+  "description": "Metal Over Moss: Zero RF transmission, muted sensors, silenced daemons",
+  "radios": {
+    "rfkill": "block",
+    "bluetooth": "masked",
+    "wifi": "down"
+  },
+  "sensors": {
+    "microphone": "muted",
+    "camera": "unloaded"
+  },
+  "compute": {
+    "cpu_governor": "powersave",
+    "turbo_boost": false
+  },
+  "services_to_suspend": [
+    "mongod",
+    "redis-server",
+    "ollama"
+  ]
+}
