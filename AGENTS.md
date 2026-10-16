@@ -36,6 +36,7 @@ Files in this repository are symlinked directly into the user root (`/home/dev`)
 - **Aliases & Helpers**:
   - Defined in `.bash_aliases` and sourced by `.bashrc`.
   - `freshenup`: Top-off and synchronize system packages, dotfiles, services, and AI models (`~/code/freshenup.sh`).
+  - `mom`: Metal Over Moss emergency hardening ripcord and triage cockpit (`~/code/mom.sh` & `~/code/mom/`).
   - `batt`: Quick battery status inspecting `/sys/class/power_supply/BAT0/` (fallback to `upower`).
   - `devgo`: Custom environment unlocker and launcher for `agy`.
 - **Guidelines for New Utilities**:
