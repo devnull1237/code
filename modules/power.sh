@@ -78,10 +78,44 @@ setup_tlp() {
     fi
 }
 
+# 3. Cinnamon Desktop Power & Battery Preferences
+setup_cinnamon_power() {
+    if ! command -v gsettings >/dev/null 2>&1; then
+        return 0
+    fi
+
+    log_info "Configuring Cinnamon power and battery settings..."
+    local schema="org.cinnamon.settings-daemon.plugins.power"
+
+    # Screen off inactivity: 3 hours on AC (10800s), 1 hour on Battery (3600s)
+    gsettings set "$schema" sleep-display-ac 10800 2>/dev/null || true
+    gsettings set "$schema" sleep-display-battery 3600 2>/dev/null || true
+
+    # Suspend when inactive: Never (0)
+    gsettings set "$schema" sleep-inactive-ac-timeout 0 2>/dev/null || true
+    gsettings set "$schema" sleep-inactive-battery-timeout 0 2>/dev/null || true
+
+    # Lid close: Do nothing (keep running)
+    gsettings set "$schema" lid-close-ac-action 'nothing' 2>/dev/null || true
+    gsettings set "$schema" lid-close-battery-action 'nothing' 2>/dev/null || true
+    gsettings set "$schema" lid-close-suspend-with-external-monitor false 2>/dev/null || true
+
+    # Power button: Ask (interactive)
+    gsettings set "$schema" button-power 'interactive' 2>/dev/null || true
+
+    # On battery, dim screen when inactive: true, level: 10%, after 10 minutes (600s)
+    gsettings set "$schema" idle-dim-battery true 2>/dev/null || true
+    gsettings set "$schema" idle-brightness 10 2>/dev/null || true
+    gsettings set "$schema" idle-dim-time 600 2>/dev/null || true
+
+    log_ok "Cinnamon power preferences configured."
+}
+
 main() {
     log_info "--- Running Module: power ---"
     setup_lid_switch
     setup_tlp
+    setup_cinnamon_power
     log_ok "Power configuration module complete."
 }
 
