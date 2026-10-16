@@ -1,0 +1,53 @@
+{
+  "tools": {
+    "primary_browser": "firefox",
+    "secondary_browser": "google-chrome",
+    "primary_cli_editor": "nvim",
+    "primary_gui_ide": "antigravity"
+  },
+  "packages": {
+    "extra_cli": [
+      "btop",
+      "powertop",
+      "tree",
+      "jq",
+      "xclip",
+      "mullvad-vpn"
+    ]
+  },
+  "services": {
+    "mongodb": true,
+    "redis": true,
+    "ollama": true
+  },
+  "ai": {
+    "models": [
+      "granite4.2:3b",
+      "granite4.2:8b"
+    ]
+  },
+  "mom": {
+    "kill_launchers": [
+      "steam",
+      "steamwebhelper",
+      "lutris",
+      "heroic",
+      "epicgameslauncher",
+      "battlenet",
+      "origin",
+      "eadesktop",
+      "wine",
+      "wineserver"
+    ],
+    "kill_distractions": [
+      "discord",
+      "spotify",
+      "slack",
+      "telegram-desktop",
+      "transmission-gtk",
+      "qbittorrent",
+      "deluge"
+    ],
+    "disconnect_vpn": true
+  }
+}

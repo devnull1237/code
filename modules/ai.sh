@@ -27,10 +27,17 @@ install_ollama() {
 
 pull_models() {
     log_info "Checking local LLMs..."
-    local models=(
-        "granite4.2:3b"
-        "granite4.2:8b"
-    )
+    local models=()
+    local settings_file="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/settings.json"
+    if [ -f "$settings_file" ] && command -v jq >/dev/null 2>&1; then
+        while IFS= read -r model_name; do
+            [ -n "$model_name" ] && models+=("$model_name")
+        done < <(jq -r '.ai.models[]? // empty' "$settings_file" 2>/dev/null || true)
+    fi
+
+    if [ ${#models[@]} -eq 0 ]; then
+        models=("granite4.2:3b" "granite4.2:8b")
+    fi
 
     local existing_models
     existing_models="$(ollama list 2>/dev/null || true)"

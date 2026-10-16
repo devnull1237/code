@@ -36,6 +36,14 @@ install_core_packages() {
         ufw
     )
 
+    # Read any user-specified extra_cli packages from settings.json
+    local settings_file="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)/settings.json"
+    if [ -f "$settings_file" ] && command -v jq >/dev/null 2>&1; then
+        while IFS= read -r extra_pkg; do
+            [ -n "$extra_pkg" ] && pkgs+=("$extra_pkg")
+        done < <(jq -r '.packages.extra_cli[]? // empty' "$settings_file" 2>/dev/null || true)
+    fi
+
     local missing=()
     for pkg in "${pkgs[@]}"; do
         if ! dpkg -s "$pkg" >/dev/null 2>&1; then
