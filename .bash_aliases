@@ -28,6 +28,7 @@ if [ -f "$HOME/.local/bin/devgo" ]; then
 fi
 alias bootstrap="$HOME/code/bootstrap.sh"
 alias freshenup="$HOME/code/bootstrap.sh"
+alias debloat="$HOME/code/debloat.sh"
 alias mom="$HOME/code/mom.sh"
 alias proj="$HOME/code/bin/proj"
 alias hydrate="$HOME/code/hydrate.sh"
