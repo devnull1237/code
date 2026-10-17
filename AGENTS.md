@@ -22,11 +22,11 @@ Files in this repository are symlinked directly into the user root (`/home/dev`)
 
 ---
 
-## 3. Git & Remote
-- **Repository**: `git@github.com:telosdevgroup/code.git`
+## 3. Git & Local Version Control
+- **Posture**: **100% Local (Airgapped / Sneakernet via USB)**. No GitHub remote.
 - **Default Branch**: `main`
 - **Author Identity**: Kyle Carlson (`thekylecarlson@gmail.com`)
-- SSH authentication is configured for `telosdevgroup` on GitHub. Use SSH URLs (`git@github.com:...`).
+- Changes are committed locally and synchronized across machines via removable USB drive.
 
 ---
 
