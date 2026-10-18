@@ -138,15 +138,92 @@ blacklist btbcm
     log_ok "Bluetooth permanently disabled at boot."
 }
 
+# 5. Keyboard Backlight (100% at Boot & Turn Off on Lid Close)
+setup_keyboard_backlight() {
+    log_info "Configuring keyboard backlight (100% on boot, off on lid close)..."
+
+    local helper_script="/usr/local/bin/kbd-backlight-lid"
+    local service_file="/etc/systemd/system/kbd-backlight-lid.service"
+
+    # Install helper daemon script
+    local script_content='#!/usr/bin/env bash
+# kbd-backlight-lid: Sets kbd backlight to 100% on boot and monitors lid close/open
+set -euo pipefail
+
+set_backlight() {
+    local target="$1" # "max" or "0"
+    for dev in /sys/class/leds/*kbd_backlight*; do
+        [ -d "$dev" ] || continue
+        if [ "$target" = "max" ]; then
+            local max_val
+            max_val="$(cat "$dev/max_brightness" 2>/dev/null || echo 2)"
+            echo "$max_val" > "$dev/brightness" 2>/dev/null || true
+        else
+            echo "0" > "$dev/brightness" 2>/dev/null || true
+        fi
+    done
+}
+
+# Set 100% at boot/service startup
+set_backlight "max"
+
+# Monitor lid state transitions via acpi events or input device
+last_state="open"
+while true; do
+    curr_state="open"
+    for state_file in /proc/acpi/button/lid/*/state; do
+        if [ -f "$state_file" ] && grep -qi "closed" "$state_file"; then
+            curr_state="closed"
+            break
+        fi
+    done
+
+    if [ "$curr_state" != "$last_state" ]; then
+        if [ "$curr_state" = "closed" ]; then
+            set_backlight "0"
+        else
+            set_backlight "max"
+        fi
+        last_state="$curr_state"
+    fi
+    sleep 1
+done
+'
+
+    echo "$script_content" | run_sudo tee "$helper_script" >/dev/null
+    run_sudo chmod +x "$helper_script"
+
+    local service_content="[Unit]
+Description=Keyboard Backlight 100% on boot & Lid Control
+After=systemd-udevd.service sys-subsystem-net-devices.target
+
+[Service]
+Type=simple
+ExecStart=$helper_script
+Restart=always
+RestartSec=3
+
+[Install]
+WantedBy=multi-user.target
+"
+
+    echo "$service_content" | run_sudo tee "$service_file" >/dev/null
+    run_sudo systemctl daemon-reload
+    run_sudo systemctl enable --now kbd-backlight-lid.service
+    log_ok "Keyboard backlight service installed and active."
+}
+
 main() {
     log_info "--- Running Module: power ---"
     setup_lid_switch
     setup_tlp
     setup_cinnamon_power
     disable_bluetooth
+    setup_keyboard_backlight
     log_ok "Power configuration module complete."
 }
 
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     main "$@"
 fi
+

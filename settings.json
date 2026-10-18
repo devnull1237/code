@@ -34,7 +34,9 @@
     ]
   },
   "hardware": {
-    "bluetooth_on_boot": false
+    "bluetooth_on_boot": false,
+    "keyboard_backlight_on_boot": true,
+    "keyboard_backlight_lid_control": true
   },
   "services": {
     "mongodb": true,
