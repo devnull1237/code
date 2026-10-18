@@ -22,11 +22,11 @@ Files in this repository are symlinked directly into the user root (`/home/dev`)
 
 ---
 
-## 3. Git & Local Version Control
-- **Posture**: **100% Local (Airgapped / Sneakernet via USB)**. No GitHub remote.
+## 3. Git & Remote
+- **Repository**: `git@github.com:devnull1237/code.git`
 - **Default Branch**: `main`
 - **Author Identity**: Kyle Carlson (`thekylecarlson@gmail.com`)
-- Changes are committed locally and synchronized across machines via removable USB drive.
+- **Posture**: Synchronized with GitHub remote (`devnull1237/code`) and portable for USB sneakernet across machines.
 
 ---
 
