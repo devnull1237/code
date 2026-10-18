@@ -23,7 +23,7 @@ Files in this repository are symlinked directly into the user root (`/home/dev`)
 ---
 
 ## 3. Git & Remote
-- **Repository**: `git@github.com:telosdevgroup/code.git`
+- **Repository**: `git@github.com:devnull1237/code.git`
 - **Default Branch**: `main`
 - **Author Identity**: Kyle Carlson (`thekylecarlson@gmail.com`)
 - SSH authentication is configured for `telosdevgroup` on GitHub. Use SSH URLs (`git@github.com:...`).
