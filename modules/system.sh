@@ -78,10 +78,44 @@ upgrade_system() {
     log_ok "System is up to date."
 }
 
+# 4. NVMe, Swappiness, and Inode Cache Tuning
+configure_nvme_and_memory() {
+    log_info "Tuning swappiness, inode cache, and NVMe endurance..."
+
+    # Sysctl configuration
+    local sysctl_file="/etc/sysctl.d/99-nerdbox-nvme.conf"
+    local sysctl_rules="# Reduce swapping to preserve NVMe write endurance and prioritize DDR RAM
+vm.swappiness = 10
+# Preserve directory and inode structures in cache longer
+vm.vfs_cache_pressure = 50
+"
+
+    if [ ! -f "$sysctl_file" ] || [ "$(cat "$sysctl_file" 2>/dev/null)" != "$sysctl_rules" ]; then
+        echo "$sysctl_rules" | run_sudo tee "$sysctl_file" >/dev/null
+        run_sudo sysctl --system >/dev/null 2>&1 || true
+        log_ok "Applied sysctl memory & swappiness optimizations."
+    else
+        log_ok "Sysctl swappiness & NVMe tuning already in place."
+    fi
+
+    # Add noatime to root ext4 filesystem in /etc/fstab if not present
+    if [ -f /etc/fstab ]; then
+        if grep -E 'UUID=.*[[:space:]]+/[[:space:]]+ext4[[:space:]]+' /etc/fstab | grep -v -q 'noatime'; then
+            log_info "Enabling noatime on root ext4 mount in /etc/fstab..."
+            run_sudo sed -i -E 's|(UUID=[^[:space:]]+[[:space:]]+/[[:space:]]+ext4[[:space:]]+)(errors=remount-ro)|\1noatime,\2|' /etc/fstab
+            run_sudo mount -o remount,noatime / 2>/dev/null || true
+            log_ok "Root filesystem remounted with noatime."
+        else
+            log_ok "Root filesystem already configured with noatime."
+        fi
+    fi
+}
+
 main() {
     log_info "=== Initializing System & Package Manager ==="
     configure_apt_performance
     install_base_prereqs
+    configure_nvme_and_memory
     upgrade_system
     log_ok "System initialization complete."
 }
@@ -89,3 +123,4 @@ main() {
 if [[ "${BASH_SOURCE[0]}" == "${0}" ]]; then
     main "$@"
 fi
+
