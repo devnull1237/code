@@ -43,6 +43,7 @@ if [ ${#targets[@]} -eq 0 ]; then
         libreoffice-impress libreoffice-draw libreoffice-math libreoffice-base
         thunderbird hexchat rhythmbox celluloid hypnotix drawing simple-scan
         warpinator thingy sticky pix pix-data gnome-mines gnome-sudoku
+        speech-dispatcher cups-browsed bluez bluez-obexd blueman bluetooth
     )
 fi
 

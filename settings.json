@@ -32,7 +32,11 @@
       "gnome-mines",
       "gnome-sudoku",
       "speech-dispatcher",
-      "cups-browsed"
+      "cups-browsed",
+      "bluez",
+      "bluez-obexd",
+      "blueman",
+      "bluetooth"
     ]
   },
   "hardware": {
