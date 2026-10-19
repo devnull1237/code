@@ -30,7 +30,9 @@
       "pix",
       "pix-data",
       "gnome-mines",
-      "gnome-sudoku"
+      "gnome-sudoku",
+      "speech-dispatcher",
+      "cups-browsed"
     ]
   },
   "hardware": {

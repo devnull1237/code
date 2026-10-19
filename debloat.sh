@@ -67,14 +67,18 @@ log_info "Purging orphaned packages, lingering config residues, and APT cache...
 run_sudo apt-get autoremove --purge -y -qq
 run_sudo apt-get clean -qq
 
-# 5. Mask unwanted background services & telemetry if present
-log_info "Silencing telemetry and unnecessary background daemons..."
+# 5. Mask unwanted background services & telemetry (system-wide)
+log_info "Silencing telemetry and unnecessary system background daemons..."
 unwanted_services=(
     whoopsie.service
     apport.service
     kerneloops.service
     avahi-daemon.service
+    cups.service
     cups-browsed.service
+    ModemManager.service
+    bolt.service
+    colord.service
 )
 
 for svc in "${unwanted_services[@]}"; do
@@ -83,6 +87,21 @@ for svc in "${unwanted_services[@]}"; do
         run_sudo systemctl disable "$svc" 2>/dev/null || true
         run_sudo systemctl mask "$svc" 2>/dev/null || true
     fi
+done
+
+# 6. Mask unwanted user session services (GNOME/Evolution background engines & speech)
+log_info "Silencing background user session daemons (Evolution data servers, speech)..."
+user_unwanted_services=(
+    evolution-source-registry.service
+    evolution-calendar-factory.service
+    evolution-addressbook-factory.service
+    speech-dispatcher.service
+    obex.service
+)
+
+for usvc in "${user_unwanted_services[@]}"; do
+    systemctl --user stop "$usvc" 2>/dev/null || true
+    systemctl --user mask "$usvc" 2>/dev/null || true
 done
 
 end_time="$(date +%s)"
